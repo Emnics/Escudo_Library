@@ -16,7 +16,7 @@ GPIO.setmode(GPIO.BOARD)
 
 GPIO.setwarnings(False)
 
-address=0x68                 # RTCC I2C slave ID
+address=0x68                 # RTCC Reg address
 
 #-----------Function to read time from RTCC--------------------#
 def Read_Time():
