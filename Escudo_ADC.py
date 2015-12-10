@@ -1,3 +1,9 @@
+"""***********************************************************************
+Author      : 
+Organization:  Emnics Technologies Pvt Ltd
+Description :  Sample code for ESCUDO ADC
+***********************************************************************"""
+
 import RPi.GPIO as GPIO
 from time import sleep
 import os
