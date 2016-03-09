@@ -11,16 +11,38 @@ import thread
 bus=smbus.SMBus(1)
 GPIO.setmode(GPIO.BOARD)
 
+address1=0x50                            # EEPROM Register Address
 
-eeprom_I2C_ID=0x50              #eeprom I2C address
-data= 10                        # data to be written
-eeprom_reg_address=0
-bus.write_byte_data(eeprom_I2C_ID,eeprom_reg_address,data)     # write data to eeprom
+#"""*********************************************************************"""
+#Function Name   :Save_To_Memory(addr,data)
+#Descriptions    :Saves Data to memory
+#Argument        :Address,Data
+#Return          :None
+"***********************************************************************"""
 
-sleep(0.7)
+def Save_To_Memory(addr,data):
+    bus.write_byte_data(address1,0,0xA0)
+    sleep(0.7)
+    bus.write_byte_data(address1,addr,data)
+    sleep(0.7)
+#"""********************************************************************""""
+   
+#"""*********************************************************************"""
+#Function Name   :Read_From_Memory(addr)
+#Descriptions    :Reads Data from memory
+#Argument        :Address
+#Return          :Data
+"***********************************************************************"""
 
+def Read_From_Memory(addr):
+     data=bus.read_byte_data(address1,addr)
+     sleep(0.7)
+     return data
+
+#"""********************************************************************""""
+
+Save_To_Memory(2,10)
 while(1):
-
-   read_data=bus.read_byte_data(eeprom_I2C_ID,eeprom_reg_address)   #read data from eeprom
-   if(read_data==data):
-       print "EEPROM WORKING"
+     x=Read_From_Memory(2)
+     print x
+   
