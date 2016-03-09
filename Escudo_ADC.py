@@ -1,25 +1,40 @@
-"""***********************************************************************
-Author      : 
-Organization:  Emnics Technologies Pvt Ltd
-Description :  Sample code for ESCUDO ADC
-***********************************************************************"""
 
 import RPi.GPIO as GPIO
 from time import sleep
 import os
 import smbus
-bus=smbus.SMBus(1)
-GPIO.setmode(GPIO.BCM)
+import thread
+bus=smbus.SMBus(1)                     #I2C Library 
+GPIO.setmode(GPIO.BOARD)               #Pin No Selection based on Board
 
-DEBUG=1
+GPIO.setwarnings(False)
+
+
+"""************************SPI Pin Assignment**************************"""
+SPICLK=23
+SPIMOSI=19
+SPIMISO=21
+SPICS=26
+
+GPIO.setup(SPIMOSI,GPIO.OUT)
+GPIO.setup(SPIMISO,GPIO.IN)
+GPIO.setup(SPICLK,GPIO.OUT)
+GPIO.setup(SPICS,GPIO.OUT)
+"""*********************************************************************"""
 
 
 #---------------ADC read Function definition--------------------#
 #function Name        : readadc
-#arguments            : ADC number,SPI clock pin no,MOSI,MISO,CS pin nos
+#arguments            : ADC number
 #return                : adc value
 #---------------------------------------------------------------#
-def readadc(adcnum,clockpin,mosipin,misopin,cspin):
+
+def readadc(adcnum):
+    clockpin=SPICLK
+    mosipin=SPIMOSI
+    misopin=SPIMISO
+    cspin= SPICS
+    
     if((adcnum>7) or (adcnum<0)):
         return -1
     GPIO.output(cspin,True)
@@ -50,42 +65,11 @@ def readadc(adcnum,clockpin,mosipin,misopin,cspin):
     GPIO.output(cspin,True)
     adcout>>=1
     return adcout
-#------------------------------------------------------------#
-#-----------------SPI Pin Nos--------------------------------#
-SPICLK=11
-SPIMOSI=10
-SPIMISO=9
-SPICS=7
-#------------------------------------------------------------#
-#---------------------SPI PIN DIRECTIONS---------------------#
-GPIO.setup(SPIMOSI,GPIO.OUT)
-GPIO.setup(SPIMISO,GPIO.IN)
-GPIO.setup(SPICLK,GPIO.OUT)
-GPIO.setup(SPICS,GPIO.OUT)
-#------------------------------------------------------------#
-
-#---------------------Initialisation-------------------------#
-potentiometer_adc=7           #ADC No           
-last_read=0                   # To store Last read ADC value
-tolerance=5                   # Tolerance variable (Modifiable)
-#------------------------------------------------------------#
+#"""********************************************************************""""
 
 #------------------While Loop---------------------------------#
 while True:
-    trim_pot_changed=False
-    trim_pot=readadc(potentiometer_adc,SPICLK,SPIMOSI,SPIMISO,SPICS)
-    pot_adjust=abs(trim_pot-last_read)          # To adjust ADC val to zero if tolernance exist
-    voltage=(trim_pot*3300)/1024                # ADC volatge
-    print voltage
-        
-    if(pot_adjust>tolerance):
-        trim_pot_changed=True
-
-    if(trim_pot_changed):                      # if diff btw adc val and last read value is greater than
-        set_volume=trim_pot/10.24              # tolerance
-        set_volume=round(set_volume)
-        set_volume=int(set_volume)
-       
-    last_read=trim_pot
-
+    adc_val=readadc(1)
+    print adc_val
+      
    
