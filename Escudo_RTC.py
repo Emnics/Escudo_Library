@@ -62,6 +62,7 @@ def Read_Time():
 
 Set_Time(14,30,0)
 while(1):
-     time=Read_From_Memory(2)
+     time=Read_Time()
      print time
+     sleep(0.5)
 
