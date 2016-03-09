@@ -25,11 +25,12 @@ GPIO.setup(SPICS,GPIO.OUT)
 
 #---------------ADC read Function definition--------------------#
 #function Name        : readadc
-#arguments            : ADC number
+#arguments            : ADC number(between 1-8)
 #return                : adc value
 #---------------------------------------------------------------#
 
 def readadc(adcnum):
+     adcnum=adcnum-1
     clockpin=SPICLK
     mosipin=SPIMOSI
     misopin=SPIMISO
