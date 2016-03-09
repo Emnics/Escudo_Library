@@ -18,7 +18,38 @@ GPIO.setwarnings(False)
 
 address=0x68                 # RTCC Reg address
 
-#-----------Function to read time from RTCC--------------------#
+#"""*********************************************************************"""
+#Function Name   :Set_Time
+#Descriptions    :Resets RTC default Timings
+#Argument        :hour,minute,second
+#Return          :None
+"***********************************************************************"""
+
+def Set_Time(hour,minute,second):
+    SEC_ONTIME=second
+    MIN_ONTIME=minute
+    HR_ONTIME=hour
+    bus.write_byte_data(address,0,0xD0)
+    sleep(0.7)
+    SEC_ONTIME=(((SEC_ONTIME/10)<<4)+(SEC_ONTIME%10))
+    bus.write_byte_data(address,0,SEC_ONTIME)
+    sleep(0.7)
+    MIN_ONTIME=(((MIN_ONTIME/10)<<4)+(MIN_ONTIME%10))
+    bus.write_byte_data(address,1,MIN_ONTIME)
+    sleep(0.7)
+    HR_ONTIME=(((HR_ONTIME/10)<<4)+(HR_ONTIME%10))
+    bus.write_byte_data(address,2,HR_ONTIME)
+    sleep(0.7)
+#"""********************************************************************""""
+
+
+#"""*********************************************************************"""
+#Function Name   :Read_Time
+#Descriptions    :Reads current RTCC Time
+#Argument        :None
+#Return          :Time (hr:min:sec formar) 
+"***********************************************************************"""
+
 def Read_Time():
     col=bus.read_byte_data(address,0)
     col=(((col>>4)*10)+(col&0x0f))
@@ -27,30 +58,10 @@ def Read_Time():
     hr=bus.read_byte_data(address,2)
     hr=(((hr>>4)*10)+(hr&0x0f))
     return str(hr)+":"+str(mint)+":"+str(col)
-    
-#---------------------------------------------------------------#
+#"""********************************************************************""""
 
-#---------------Function to set RTCC Time-----------------------#
-
-def Set_Time(hour,minute,second):  
-    bus.write_byte_data(address,0,0xD0)
-    sleep(0.7)
-    second=(((second/10)<<4)+(second%10))
-    bus.write_byte_data(address,0,second)
-    sleep(0.7)
-    minute=(((minute/10)<<4)+(minute%10))
-    bus.write_byte_data(address,1,minute)
-    sleep(0.7)
-    hour=(((hour/10)<<4)+(hour%10))
-    bus.write_byte_data(address,2,hour)
-    sleep(0.7)
-#-----------------------------------------------------------------#    
-
-Set_Time(12,0,0)                     #set time initially
-
+Set_Time(14,30,0)
 while(1):
-   RTCTime = Read_Time()            #Read Time
-   print RTCTime                    #print time
-   sleep(1)
-   
-#---------------------------EOF-------------------------------------#
+     time=Read_From_Memory(2)
+     print time
+
